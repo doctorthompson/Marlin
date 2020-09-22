@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 #pragma once
@@ -28,7 +28,7 @@
 /**
  * Marlin release version identifier
  */
-#define SHORT_BUILD_VERSION "2.0.5.5-SKR14T"
+//#define SHORT_BUILD_VERSION "2.0.6.1"
 
 /**
  * Verbose version identifier which should contain a reference to the location
@@ -41,12 +41,12 @@
  * here we define this default string as the date where the latest release
  * version was tagged.
  */
-#define STRING_DISTRIBUTION_DATE "2020-06-10"
+#define STRING_DISTRIBUTION_DATE "2020-09-19"
 
 /**
  * Defines a generic printer name to be output to the LCD after booting Marlin.
  */
-#define MACHINE_NAME "AnyCubic Mega S"
+#define MACHINE_NAME "Creality Ender 3"
 
 /**
  * The SOURCE_CODE_URL is the location where users will find the Marlin Source
@@ -71,6 +71,6 @@
  * Set the vendor info the serial USB interface, if changable
  * Currently only supported by DUE platform
  */
-//#define  USB_DEVICE_VENDOR_ID           0x0000
-//#define  USB_DEVICE_PRODUCT_ID          0x0000
-//#define  USB_DEVICE_MANUFACTURE_NAME    WEBSITE_URL
+//#define USB_DEVICE_VENDOR_ID           0x0000
+//#define USB_DEVICE_PRODUCT_ID          0x0000
+//#define USB_DEVICE_MANUFACTURE_NAME    WEBSITE_URL
