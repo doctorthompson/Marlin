@@ -70,7 +70,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "@doctorthompson & Merlin team" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(@doctorthompson & Marlin team)" // Who made the changes.
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
@@ -469,7 +469,7 @@
 // Above this temperature the heater will be switched off.
 // This can protect components from overheating, but NOT from shorts and failures.
 // (Use MINTEMP for thermistor short/failure protection.)
-#define HEATER_0_MAXTEMP 285
+#define HEATER_0_MAXTEMP 265
 #define HEATER_1_MAXTEMP 275
 #define HEATER_2_MAXTEMP 275
 #define HEATER_3_MAXTEMP 275
@@ -477,7 +477,7 @@
 #define HEATER_5_MAXTEMP 275
 #define HEATER_6_MAXTEMP 275
 #define HEATER_7_MAXTEMP 275
-#define BED_MAXTEMP 125
+#define BED_MAXTEMP 120
 
 //===========================================================================
 //============================= PID Settings ================================
@@ -534,6 +534,7 @@
 //#define MIN_BED_POWER 0
 //#define PID_BED_DEBUG // Sends debug data to the serial port.
 // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
+// Creality Ender 3
   #define DEFAULT_bedKp 50.71
   #define DEFAULT_bedKi 9.88
   #define DEFAULT_bedKd 173.43
@@ -557,14 +558,14 @@
  * *** IT IS HIGHLY RECOMMENDED TO LEAVE THIS OPTION ENABLED! ***
  */
 #define PREVENT_COLD_EXTRUSION
-#define EXTRUDE_MINTEMP 170
+#define EXTRUDE_MINTEMP 180
 
 /**
  * Prevent a single extrusion longer than EXTRUDE_MAXLENGTH.
  * Note: For Bowden Extruders make this large enough to allow load/unload.
  */
 #define PREVENT_LENGTHY_EXTRUDE
-#define EXTRUDE_MAXLENGTH 200
+#define EXTRUDE_MAXLENGTH 1000
 
 //===========================================================================
 //======================== Thermal Runaway Protection =======================
@@ -1008,8 +1009,8 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-#define MULTIPLE_PROBING 2
-#define EXTRA_PROBING    1
+// #define MULTIPLE_PROBING 2
+// #define EXTRA_PROBING    1
 
 /**
  * Z probes require clearance when deploying, stowing, and moving between
@@ -1357,14 +1358,14 @@
   }                              // (mm) Left, Front, Right, Back insets
 #define LEVEL_CORNERS_HEIGHT 0.1 // (mm) Z height of nozzle at leveling points
 #define LEVEL_CORNERS_Z_HOP 4.0  // (mm) Z height of nozzle between leveling points
-//#define LEVEL_CENTER_TOO              // Move to the center after the last corner
+#define LEVEL_CENTER_TOO              // Move to the center after the last corner
 #endif
 
 /**
  * Commands to execute at the end of G29 probing.
  * Useful to retract or move the Z probe out of the way.
  */
-//#define Z_PROBE_END_SCRIPT "G1 Z10 F12000\nG1 X15 Y330\nG1 Z0.5\nG1 Z10"
+#define Z_PROBE_END_SCRIPT "G1 Z10 F12000\nG1 X15 Y330\nG1 Z0.5\nG1 Z10"
 
 // @section homing
 
@@ -1395,7 +1396,7 @@
 
 // Homing speeds (mm/min)
 #define HOMING_FEEDRATE_XY (50*60)
-#define HOMING_FEEDRATE_Z  (5*60)
+#define HOMING_FEEDRATE_Z  (8*60)
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
@@ -1508,9 +1509,9 @@
 #define PREHEAT_1_TEMP_BED 60
 #define PREHEAT_1_FAN_SPEED 0 // Value from 0 to 255
 
-#define PREHEAT_2_LABEL "ABS"
-#define PREHEAT_2_TEMP_HOTEND 240
-#define PREHEAT_2_TEMP_BED 110
+#define PREHEAT_2_LABEL "PETG"
+#define PREHEAT_2_TEMP_HOTEND 235
+#define PREHEAT_2_TEMP_BED 80
 #define PREHEAT_2_FAN_SPEED 0 // Value from 0 to 255
 
 /**
@@ -1637,7 +1638,7 @@
  *
  * View the current statistics with M78.
  */
-#define PRINTCOUNTER
+// #define PRINTCOUNTER
 
 /**
  * Password
