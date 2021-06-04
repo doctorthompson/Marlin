@@ -38,7 +38,7 @@
  * This bitmap from the file 'cant_stop_the_signal_128x32.bmp'
  */
 #pragma once
-#define CUSTOM_BOOTSCREEN_TIMEOUT 1000
+#define CUSTOM_BOOTSCREEN_TIMEOUT 5000
 #define CUSTOM_BOOTSCREEN_BMPWIDTH  128
 
 const unsigned char custom_start_bmp[] PROGMEM = {
