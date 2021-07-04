@@ -338,6 +338,10 @@ inline void init_free_memory(char *start_free_memory, int32_t size) {
  * M100: Free Memory Check
  */
 void GcodeSuite::M100() {
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+
   char *sp = top_of_stack();
   if (!free_memory_end) free_memory_end = sp - MEMORY_END_CORRECTION;
                   SERIAL_ECHOPAIR("\nbss_end               : ", hex_address(end_bss));
@@ -348,6 +352,8 @@ void GcodeSuite::M100() {
   if (MEMORY_END_CORRECTION)
                   SERIAL_ECHOPAIR("\nMEMORY_END_CORRECTION : ", MEMORY_END_CORRECTION);
                   SERIAL_ECHOLNPAIR("\nStack Pointer       : ", hex_address(sp));
+
+#pragma GCC diagnostic pop
 
   // Always init on the first invocation of M100
   static bool m100_not_initialized = true;

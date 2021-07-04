@@ -544,7 +544,7 @@
 #define HEATER_5_MAXTEMP 275
 #define HEATER_6_MAXTEMP 275
 #define HEATER_7_MAXTEMP 275
-#define BED_MAXTEMP      150
+#define BED_MAXTEMP      125
 #define CHAMBER_MAXTEMP  60
 
 /**
@@ -574,17 +574,16 @@
   //#define PID_PARAMS_PER_HOTEND // Uses separate PID parameters for each extruder (useful for mismatched extruders)
                                   // Set/get with gcode: M301 E[extruder number, 0-2]
 
-  // Creality Ender-3
   #if ENABLED(PID_PARAMS_PER_HOTEND)
     // Specify between 1 and HOTENDS values per array.
     // If fewer than EXTRUDER values are provided, the last element will be repeated.
-    #define DEFAULT_Kp_LIST {  21.73,  21.73 }
-    #define DEFAULT_Ki_LIST {   1.54,   1.54 }
-    #define DEFAULT_Kd_LIST {  76.55,  76.55 }
+    #define DEFAULT_Kp_LIST {  15.94,  15.94 }
+    #define DEFAULT_Ki_LIST {   1.17,   1.17 }
+    #define DEFAULT_Kd_LIST {  54.19,  54.19 }
   #else
-    #define DEFAULT_Kp 23.28
-    #define DEFAULT_Ki 1.63
-    #define DEFAULT_Kd 83.37
+    #define DEFAULT_Kp  15.94
+    #define DEFAULT_Ki   1.17
+    #define DEFAULT_Kd  54.19
   #endif
 #endif // PIDTEMP
 
@@ -621,9 +620,9 @@
   //#define MIN_BED_POWER 0
   //#define PID_BED_DEBUG // Sends debug data to the serial port.
 
-#define DEFAULT_bedKp 252.46
-#define DEFAULT_bedKi 45.08
-#define DEFAULT_bedKd 942.60
+  #define DEFAULT_bedKp 251.78
+  #define DEFAULT_bedKi 49.57
+  #define DEFAULT_bedKd 319.73
 
   // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
 #endif // PIDTEMPBED
@@ -690,14 +689,14 @@
  * *** IT IS HIGHLY RECOMMENDED TO LEAVE THIS OPTION ENABLED! ***
  */
 #define PREVENT_COLD_EXTRUSION
-#define EXTRUDE_MINTEMP 170
+#define EXTRUDE_MINTEMP 180
 
 /**
  * Prevent a single extrusion longer than EXTRUDE_MAXLENGTH.
  * Note: For Bowden Extruders make this large enough to allow load/unload.
  */
 #define PREVENT_LENGTHY_EXTRUDE
-#define EXTRUDE_MAXLENGTH 600
+#define EXTRUDE_MAXLENGTH 300
 
 //===========================================================================
 //======================== Thermal Runaway Protection =======================
@@ -798,17 +797,19 @@
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
-#define Y_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
-#define X_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
-#define Y_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
-#define Z_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define Y_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define Z_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define I_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define J_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define K_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define I_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endTMC2209
+#define X_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define Y_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define Z_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define I_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define J_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define K_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define Z_MIN_PROBE_ENDSTOP_INVERTING false // Set to true to invert the logic of the probe.
 
 /**
  * Stepper Drivers
@@ -1055,14 +1056,25 @@
  * The BLTouch probe uses a Hall effect sensor and emulates a servo.
  */
 #define BLTOUCH
-
 /**
- * Touch-MI Probe by hotends.fr
- * on the right, enable and set TOUCH_MI_DEPLOY_XPOS to the deploy position.
- *
-//#define TOUCH_MI_MANUAL_DEPLOY                // For manual deploy (LCD menu)
-#TMC2209
-/ A probe that is deployed and stowed with a solenoid pin (SOL1TMC2209
+* Touch-MI Probe by hotends.fr
+*
+* This probe is deployed and activated by moving the X-axis to a magnet at the edge of the bed.
+* By default, the magnet is assumed to be on the left and activated by a home. If the magnet is
+* on the right, enable and set TOUCH_MI_DEPLOY_XPOS to the deploy position.
+*
+* Also requires: BABYSTEPPING, BABYSTEP_ZPROBE_OFFSET, Z_SAFE_HOMING,
+*                and a minimum Z_HOMING_HEIGHT of 10.
+*/
+//#define TOUCH_MI_PROBE
+#if ENABLED(TOUCH_MI_PROBE)
+ #define TOUCH_MI_RETRACT_Z 0.5                  // Height at which the probe retracts
+ //#define TOUCH_MI_DEPLOY_XPOS (X_MAX_BED + 2)  // For a magnet on the right side of the bed
+ //#define TOUCH_MI_MANUAL_DEPLOY                // For manual deploy (LCD menu)
+#endif
+
+// A probe that is deployed and stowed with a solenoid pin (SOL1_PIN)
+//#define SOLENOID_PROBE
 
 // A sled-mounted probe like those designed by Charles Bell.
 //#define Z_PROBE_SLED
@@ -1133,7 +1145,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { -44.5, -9, -3.1 }
+#define NOZZLE_TO_PROBE_OFFSET { -42.1, -5, -2 }
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
@@ -1200,10 +1212,14 @@
  *
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
+ */
+#define Z_CLEARANCE_DEPLOY_PROBE   10 // Z Clearance for Deploy/Stow
+#define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
 #define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
-#define Z_AFTER_PROBING             5 // Z position after probing is done
+#define Z_AFTER_PROBING           5 // Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -1 // Farthest distance below the trigger-point to go before stoTMC2209
+#define Z_PROBE_LOW_POINT          -2 // Farthest distance below the trigger-point to go before stopping
+
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -4
 #define Z_PROBE_OFFSET_RANGE_MAX 4
@@ -1244,9 +1260,14 @@
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
 // :{ 0:'Low', 1:'High' }
 #define X_ENABLE_ON 0
+#define Y_ENABLE_ON 0
+#define Z_ENABLE_ON 0
+#define E_ENABLE_ON 0 // For all extruders
 //#define I_ENABLE_ON 0
 //#define J_ENABLE_ON 0
-//#define K_ENABLE_TMC2209
+//#define K_ENABLE_ON 0
+
+// Disable axis steppers immediately when they're not being stepped.
 // WARNING: When motors turn off there is a chance of losing position accuracy!
 #define DISABLE_X false
 #define DISABLE_Y false
@@ -1266,9 +1287,14 @@
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
+#define INVERT_X_DIR false
+#define INVERT_Y_DIR true
+#define INVERT_Z_DIR true
 //#define INVERT_I_DIR false
 //#define INVERT_J_DIR false
-//#define INVERT_K_DIR fTMC2209
+//#define INVERT_K_DIR false
+
+// @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
 #define INVERT_E0_DIR true
@@ -1279,6 +1305,7 @@
 #define INVERT_E5_DIR false
 #define INVERT_E6_DIR false
 #define INVERT_E7_DIR false
+
 
 // @section homing
 
@@ -1299,9 +1326,16 @@
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
+#define X_HOME_DIR -1
+#define Y_HOME_DIR -1
+#define Z_HOME_DIR -1
 //#define I_HOME_DIR -1
 //#define J_HOME_DIR -1
-//#define K_HOME_DITMC2209
+//#define K_HOME_DIR -1
+
+// @section machine
+
+// The size of the printable area
 #define X_BED_SIZE 210
 #define Y_BED_SIZE 210
 
@@ -1309,10 +1343,15 @@
 #define X_MIN_POS 0
 #define Y_MIN_POS 0
 #define Z_MIN_POS 0
+#define X_MAX_POS X_BED_SIZE
+#define Y_MAX_POS Y_BED_SIZE
+#define Z_MAX_POS 200
+//#define I_MIN_POS 0
 //#define I_MAX_POS 50
 //#define J_MIN_POS 0
 //#define J_MAX_POS 50
-//#define K_MIN_TMC2209
+//#define K_MIN_POS 0
+//#define K_MAX_POS 50
 
 /**
  * Software Endstops
@@ -1519,6 +1558,7 @@
     #define MESH_TEST_HOTEND_TEMP  200    // (°C) Default nozzle temperature for the G26 Mesh Validation Tool.
     #define MESH_TEST_BED_TEMP      50    // (°C) Default bed temperature for the G26 Mesh Validation Tool.
     #define G26_XY_FEEDRATE         20    // (mm/s) Feedrate for XY Moves for the G26 Mesh Validation Tool.
+    #define G26_XY_FEEDRATE_TRAVEL 100    // (mm/s) Feedrate for G26 XY travel moves.
     #define G26_RETRACT_MULTIPLIER  2.0  // G26 Q (retraction) used by default between mesh test elements.
   #endif
 
@@ -1600,7 +1640,7 @@
 #endif
 
 // Add a menu item to move between bed corners for manual bed adjustment
-#define LEVEL_BED_CORNERS
+//#define LEVEL_BED_CORNERS
 
 #if ENABLED(LEVEL_BED_CORNERS)
   #define LEVEL_CORNERS_INSET_LFRB { 30, 30, 48, 30 } // (mm) Left, Front, Right, Back insets
@@ -1649,7 +1689,7 @@
 // For DELTA this is the top-center of the Cartesian print volume.
 //#define MANUAL_I_HOME_POS 0
 //#define MANUAL_J_HOME_POS 0
-//#define MANUAL_K_HOME_PTMC2209
+//#define MANUAL_K_HOME_POS 0
 //
 // With this feature enabled:
 //
@@ -2167,7 +2207,7 @@
 //#define MAKEBOARD_MINI_2_LINE_DISPLAY_1602
 
 //
-// ANET and Tronxy 20x4 ContrTMC2209
+// ANET and Tronxy 20x4 Control
 //#define ZONESTAR_LCD            // Requires ADC_KEYPAD_PIN to be assigned to an analog pin.
                                   // This LCD is known to be susceptible to electrical interference
                                   // which scrambles the display.  Pressing any button clears it up.
@@ -2330,11 +2370,11 @@
 //
 //#define ULTI_CONTROLLER
 // MKS LCD12864A/B with graphic controller and SD support. Follows MKS_MINI_12864 pinout.
-// https://www.aliexpress.com/item/33018110072.htTMC2209
+// https://www.aliexpress.com/item/33018110072.html
 
 //
 //#define FYSETC_MINI_12864_2_1    // Type A/B. NeoPixel RGB Backlight
-//#define FYSETC_GENERIC_12864_1_1 // Larger display with basic ON/OFF backlightTMC2209
+//#define FYSETC_GENERIC_12864_1_1 // Larger display with basic ON/OFF backlight.
 // https://www.aliexpress.com/item/32833148327.html
 //
 // This is RAMPS-compatible using a single 10-pin connector.
@@ -2342,7 +2382,7 @@
 //
 // Ender-2 OEM display, a variant of the MKS_MINI_12864
 //
-//#define ENDER2_STOCKDISTMC2209
+//#define ENDER2_STOCKDISPLAY
 // ANET and Tronxy Graphical Controller
 //
 // Anet 128x64 full graphics lcd with rotary encoder as used on Anet A6
@@ -2431,10 +2471,10 @@
 // DGUS Touch Display with DWIN OS. (Choose one.)
 #if ENABLED(DGUS_LCD_UI_MKS)
   #define USE_MKS_GREEN_UI
-#eTMC2209
+#endif
 
 //
-// Touch-screen LCD for Malyan M200/M300 priTMC2209
+// Touch-screen LCD for Malyan M200/M300 printers
 //#define MALYAN_LCD
 #if ENABLED(MALYAN_LCD)
   #define LCD_SERIAL_PORT 1  // Default is 1 for Malyan M200
@@ -2444,7 +2484,7 @@
 //#define TOUCH_UI_FTDI_EVE
 
 //
-// Touch-screen LCD for Anycubic priTMC2209
+// Touch-screen LCD for Anycubic printers
 //#define ANYCUBIC_LCD_I3MEGA
 //#define ANYCUBIC_LCD_CHIRON
 #if EITHER(ANYCUBIC_LCD_I3MEGA, ANYCUBIC_LCD_CHIRON)
@@ -2464,10 +2504,15 @@
 // Third-party or vendor-customized controller interfaces.
 // Sources should be installed in 'src/lcd/extui'.
 //
-////#define EXTUI_LOCAL_BEEPER // Enables use of local Beeper pin with external display
+//#define EXTENSIBLE_UI
+
+#if ENABLED(EXTENSIBLE_UI)
+  //#define EXTUI_LOCAL_BEEPER // Enables use of local Beeper pin with external display
 #endif
 
-//==========================================================================TMC2209/=============================================================================
+//=============================================================================
+//=============================== Graphical TFTs ==============================
+//=============================================================================
 
 /**
  * Specific TFT Model Presets. Enable one of the following options
@@ -2575,10 +2620,13 @@
  */
 //#define TFT_CLASSIC_UI
 //#define TFT_COLOR_UI
-////#define MKS_WIFI_MODULE  // MKS WiFi module
+//#define TFT_LVGL_UI
+
+#if ENABLED(TFT_LVGL_UI)
+  //#define MKS_WIFI_MODULE  // MKS WiFi module
 #endif
 
-TMC2209*
+/*
  *   TFT_ROTATE_90,  TFT_ROTATE_90_MIRROR_X,  TFT_ROTATE_90_MIRROR_Y,
  *   TFT_ROTATE_180, TFT_ROTATE_180_MIRROR_X, TFT_ROTATE_180_MIRROR_Y,
  *   TFT_ROTATE_270, TFT_ROTATE_270_MIRROR_X, TFT_ROTATE_270_MIRROR_Y,
